@@ -9,16 +9,34 @@ import UIKit
 
 class ResultViewController: UIViewController {
     
-    var responses: [Answer]!
+    @IBOutlet var resultAnswerLabel: UILabel!
+    @IBOutlet var resultDefinitionLabel: UILabel!
     
+    var answers: [Answer]!
     
-    // 1. Передать сюда массив с ответами
-    // 2. Определить наиболее часто встречающийся тип животного
-    // 3. Отобразить результат в соответствии с этим животным
-    // 4. Избавиться от кнопки возврата на предыдущий экран
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        findAnimal()
+        navigationItem.hidesBackButton = true
+        
+    }
+    
+    func findAnimal() {
+        var countOfAnimals: [Animal: Int] = [:]
+        let animals = answers.map { $0.animal }
+        
+        for animal in animals {
+            countOfAnimals[animal] = (countOfAnimals[animal] ?? 0) + 1
+        }
+        
+        let sortedCountOfAnimals = countOfAnimals.sorted {$0.value > $1.value}
+        
+        guard let foundAnimal = sortedCountOfAnimals.first?.key else { return }
+        
+        resultAnswerLabel.text = "Вы - \(foundAnimal.rawValue)!"
+        resultDefinitionLabel.text = "\(foundAnimal.definition)"
     }
 }
+
+
